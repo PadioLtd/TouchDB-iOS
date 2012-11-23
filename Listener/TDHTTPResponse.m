@@ -183,10 +183,19 @@
         NSData* result = [_data subdataWithRange: range];
         _offset += range.length;
         if (range.length == bytesAvailable) {
+            //TODO:check this _finished fix if its correct but its working for now
+            // this fixes large file problem and specifically the one were only first chunk is send
+            // to requestor
+            _finished = YES;
             // Client has read all of the available data, so we can discard it
             _dataOffset += _data.length;
             [_data autorelease];
             _data = nil;
+            [self autorelease];
+        }
+        //TODO:above fix
+        else {
+            _finished = NO;
         }
         LogTo(TDListenerVerbose, @"%@ sending %u bytes", self, (unsigned)result.length);
         return result;
@@ -207,7 +216,8 @@
     _router.onFinished = nil;
     if (!_finished) {
         _finished = true;
-        [self autorelease];
+        //TODO:above fix
+        //[self autorelease];
     }
 }
 
