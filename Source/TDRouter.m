@@ -171,6 +171,7 @@ extern double TouchDBVersionNumber; // Defined in Xcode-generated TouchDB_vers.c
 - (BOOL) cacheWithEtag: (NSString*)etag {
     NSString* eTag = $sprintf(@"\"%@\"", etag);
     _response[@"Etag"] = eTag;
+    return NO;
     return $equal(eTag, [_request valueForHTTPHeaderField: @"If-None-Match"]);
 }
 
